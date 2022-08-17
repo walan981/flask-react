@@ -1,0 +1,16 @@
+1 - python3 -m venv C:\Users\alanp\Desktop\Alan\2022\TERA\Modulo Python\CRUD-pythonFlask-Postgree
+
+2 - pip install flask flask-cors psycopg2 python-decouple python-dotenv
+
+3 - configurar URL do backend em package.json, campo "proxy"
+
+
+***** PARA EXECUTAR ******
+
+(FRONT)
+1 - Abrir o terminal e navegar até a pasta client
+2 - digitar npm start
+
+(BACKEND)
+1 - Abrir outro terminal e navegar até pasta flask-server
+2 - digitar python .\src\app.py
