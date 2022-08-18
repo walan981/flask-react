@@ -1,65 +1,65 @@
 
 from database.db import get_connection
-from .entities.MovieEntity import Movie
+from .entities.CommentEntity import Comment
 
 
-class MovieModel():
+class CommentModel():
 
     @classmethod  # para podermos instanciar diretamente get_movies function
-    # GET THE MOVIES LIST
-    def get_movies(self):
+    # GET THE COMMENTS LIST
+    def get_comments(self):
         try:
             connection = get_connection()
-            movies = []  # initially creates and empty list
+            commentsList = []  # initially creates and empty list
 
             # reads movies from database
             with connection.cursor() as cursor:  # Allows Python code to execute PostgreSQL command in a database session
                 cursor.execute(
-                    "SELECT id, title, duration, released FROM movie ORDER BY title ASC")
+                    "SELECT id, username, text FROM users ORDER BY username ASC")
                 resultset = cursor.fetchall()  # returns all data
             # gets the attributes for each movie
                 for row in resultset:
-                    movie = Movie(row[0], row[1], row[2], row[3])
-                    movies.append(movie.to_JSON())
+                    comment = Comment(row[0], row[1], row[2])
+                    commentsList.append(comment.to_JSON())
 
             connection.close()
-            return movies
+            return commentsList
         except Exception as ex:
             raise Exception(ex)
 
     @classmethod  # para podermos instanciar diretamente get_movies function
-    # GET AN INDIVIDUAL MOVIE
-    def get_one_movie(self, id):
+    # GET AN INDIVIDUAL COMMENT
+    def get_one_comment(self, id):
         try:
             connection = get_connection()
 
             # reads movies from database
             with connection.cursor() as cursor:  # Allows Python code to execute PostgreSQL command in a database session
                 cursor.execute(
-                    "SELECT id, title, duration, released FROM movie WHERE id = %s", (id,))
+                    "SELECT id, username, text FROM users WHERE id = %s", (id,))
                 row = cursor.fetchone()  # returns all data
 
-                movie = None
+                comment = None
                 if row != None:
-                    movie = Movie(row[0], row[1], row[2], row[3])
-                    movie = movie.to_JSON()
+                    comment = Comment(row[0], row[1], row[2])
+                    comment = comment.to_JSON()
 
             connection.close()
-            return movie
+            return comment
         except Exception as ex:
             raise Exception(ex)
 
     @classmethod  # para podermos instanciar diretamente get_movies function
-    # GET AN INDIVIDUAL MOVIE
-    def add_movie(self, movie):
+    # ADD COMMENTS
+    def add_comment(self, newComment):
         try:
             connection = get_connection()
 
             # reads movies from database
             with connection.cursor() as cursor:  # Allows Python code to execute PostgreSQL command in a database session
                 cursor.execute(
-                    """INSERT INTO movie (id, title, duration, released) 
-                    VALUES (%s, %s, %s, %s)""", (movie.id, movie.title, movie.duration, movie.released)
+                    """INSERT INTO users (id, username, text) 
+                    VALUES (%s, %s, %s)""", (newComment.id, newComment.username, newComment.text)
                 )
                 # contar quantas linhas sao afetadas no momento da insercao
                 affected_rows = cursor.rowcount
@@ -71,16 +71,16 @@ class MovieModel():
             raise Exception(ex)
 
     @classmethod  # para podermos instanciar diretamente get_movies function
-    # UPDATE MOVIE
-    def update_movie(self, movie):
+    # UPDATE COMMMENT
+    def update_comment(self, modComment):
         try:
             connection = get_connection()
 
             # reads movies from database
             with connection.cursor() as cursor:  # Allows Python code to execute PostgreSQL command in a database session
                 cursor.execute(
-                    """UPDATE movie SET title = %s, duration = %s, released = %s
-                    WHERE id = %s""", (movie.title, movie.duration, movie.released, movie.id)
+                    """UPDATE users SET text = %s
+                    WHERE id = %s""", (modComment.text, modComment.id)
                 )
                 # contar quantas linhas sao afetadas no momento da insercao
                 affected_rows = cursor.rowcount
@@ -92,15 +92,15 @@ class MovieModel():
             raise Exception(ex)
 
     @classmethod  # para podermos instanciar diretamente get_movies function
-    # DELETE MOVIE
-    def delete_movie(self, movie):
+    # DELETE COMMENT
+    def delete_comment(self, comment):
         try:
             connection = get_connection()
 
             # reads movies from database
             with connection.cursor() as cursor:  # Allows Python code to execute PostgreSQL command in a database session
                 cursor.execute(
-                    """DELETE FROM movie WHERE id = %s""", (movie.id,)
+                    """DELETE FROM users WHERE id = %s""", (comment.id,)
                 )
                 # contar quantas linhas sao afetadas no momento da insercao
                 affected_rows = cursor.rowcount

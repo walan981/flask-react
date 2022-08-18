@@ -5,7 +5,7 @@ from config import config
 
 
 # Routes (need __init__.py)
-from routes import Movie
+from routes import Comment
 
 
 app = Flask(__name__)
@@ -23,7 +23,7 @@ if __name__ == '__main__':
 
     # Blueprints
     # url address to enter the movie route:
-    app.register_blueprint(Movie.main, url_prefix='/api/movies')
+    app.register_blueprint(Comment.main, url_prefix='/api/post')
 
     # Error Handler
     app.register_error_handler(404, page_not_found)

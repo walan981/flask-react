@@ -5,20 +5,20 @@ import React, {useState, useEffect} from 'react';
 function App() {
 
   const [data, setData] = useState([{}])
-  const [comment, setComment] = useState('')
-  const[user, setUser] = useState('')
 
-  const[title, setTitle] = useState('')
-  const[duration, setDuration] = useState(0)
-  const[released, setReleased] = useState('')
+  // const [comment, setComment] = useState('')
+  // const[user, setUser] = useState('')
 
- 
+  const[text,setText] = useState('')
+  const[username,setUsername] = useState('')
+
+
   //1 - Obter resposta do servidor via fetch
   //2 - passar a resposta como objeto javascript
   //3 - extrair dados da consulta
 
   useEffect(()=>{
-    fetch("/api/movies").then(
+    fetch("/api/post").then(
       res=>{
         return res.json() //retorna objeto JS em outra promisse
       })
@@ -43,13 +43,12 @@ function App() {
     // AQUI VAI UM FETCH DE ADICIONAR COMENTARIO NA DATABASE
 
     let _data = {
-      title: title,
-      duration: duration,
-      released: released,
+      username: username,
+      text: text,
     };
     console.log(_data)
 
-    await fetch("/api/movies/add",{
+    await fetch("/api/post/add",{
       method: 'POST',
       body: JSON.stringify(_data),
       headers: { "Content-type": "application/json; charset=UTF-8" },
@@ -57,7 +56,7 @@ function App() {
       console.log(res);
 
       if(res.ok === true){
-        console.log('Filme adicionado')
+        console.log('comentario adicionado')
       }else{
         console.log('Erro na criacao')
       }
@@ -81,13 +80,13 @@ function App() {
     var id  = e.target.parentNode.getAttribute('postId')
     console.log(id)
 
-    await fetch(`/api/movies/delete/${id}`,{
+    await fetch(`/api/post/delete/${id}`,{
       method: 'DELETE',
     }).then((res)=>{
       console.log(res);
 
       if(res.ok === true){
-        console.log('Filme Deletado')
+        console.log('comentario Deletado')
       }else{
         console.log('Erro no delete')
       }
@@ -97,27 +96,22 @@ function App() {
 
 
 
-
-
-  
-
-
   return (
 
     <div className="App">
-      <h1>Lista de Filmes</h1>
+      <h1>Postagem</h1>
 
     {/* Renderiza lista de filmes */}
       {(typeof data == 'undefined')?(
         <p>Loading...</p>
       ):(
         <>
-          {(data.length>1)?(
+          {(data.length>=1)?(
           //(id, title, duration, released)
             data.map((item)=>(
               <div key={item} postId={item.id}>
                 <p>
-                  {item.title}, {item.duration} minutos, {item.released} 
+                  <b>{item.username}</b> : {item.text}
                 </p>
                 <button type='submit'
                 onClick={e=>deleteComment(e)}>
@@ -136,41 +130,22 @@ function App() {
       <div>
           <form>
 
-          {/* <input type='text'
-              value={user}
+          <input type='text'
+              value={username}
               placeholder='usuario'
-              onChange={e=>setUser(e.target.value)}>
+              onChange={e=>setUsername(e.target.value)}>
           </input>
 
             <input type='text'
-              value={comment}
+              value={text}
               placeholder='comentar'
-              onChange={e=>setComment(e.target.value)}>
-            </input> */}
-
-
-            <input type='text'
-                value={title}
-                placeholder='titulo'
-                onChange={e=>setTitle(e.target.value)}>
-            </input>
-
-            <input type='number'
-              value={duration}
-              placeholder='duracao'
-              onChange={e=>setDuration(e.target.value)}>
-            </input>
-
-            <input type='text'
-              value={released}
-              placeholder='estreia (YY-MM-DD)'
-              onChange={e=>setReleased(e.target.value)}>
+              onChange={e=>setText(e.target.value)}>
             </input>
 
 
             <button 
               type='submit'
-              disabled={!title.trim()}
+              disabled={!text.trim()}
               onClick={sendComment}
               className='font-semibold text-blue-400'>
               Post

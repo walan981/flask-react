@@ -5,55 +5,55 @@ import uuid  # cria ids unicos para cada nova entrada no db
 
 
 # Models
-from models.MovieModel import MovieModel
+from models.CommentModel import CommentModel
 # Entities
-from models.entities.MovieEntity import Movie
+from models.entities.CommentEntity import Comment
 
-main = Blueprint('movie_blueprint', __name__)
+main = Blueprint('comment_blueprint', __name__)
 
-# LISTAR FILMES
+# LISTAR COMENTARIOS
 
 
 @main.route('/')
-def get_movies():
+def get_comments():
     try:
-        movies = MovieModel.get_movies()
-        return jsonify(movies)
+        comments = CommentModel.get_comments()
+        return jsonify(comments)
     except Exception as ex:
         return jsonify({'message': str(ex)}), 500  # Error 500
 
-# BUSCA POR FILME
+# BUSCA POR COMENTARIO
 
 
 @main.route('/<id>')
-def get_one_movie(id):
+def get_one_comment(id):
     try:
-        movie = MovieModel.get_one_movie(id)
-        if movie != None:
-            return jsonify(movie)
+        comment = CommentModel.get_one_comment(id)
+        if comment != None:
+            return jsonify(comment)
         else:
             return jsonify({}), 404
     except Exception as ex:
         return jsonify({'message': str(ex)}), 500  # Error 500
 
-# ADICIONAR FILME
+# ADICIONAR COMENTARIO
 
 
 @main.route('/add', methods=['POST'])
-def add_movie():
+def add_comment():
     try:
-        title = request.json['title']
-        duration = int(request.json['duration'])
-        released = request.json['released']
+        username = request.json['username']
+        # duration = int(request.json['duration'])
+        commentText = request.json['text']
         # id = uuid.uuid1()
         id = randint(0, 99999)
         print(id)
 
-        movie = Movie(id, title, duration, released)
-        affected_rows = MovieModel.add_movie(movie)
+        comment = Comment(id, username, commentText)
+        affected_rows = CommentModel.add_comment(comment)
 
         if affected_rows == 1:
-            return jsonify(movie.id)
+            return jsonify(comment.id)
         else:
             return jsonify({'message': 'Error on insert'}), 500
 
@@ -65,17 +65,17 @@ def add_movie():
 
 
 @main.route('/update/<id>', methods=['PUT'])
-def update_movie(id):
+def update_comment(id):
     try:
-        title = request.json['title']
-        duration = int(request.json['duration'])
-        released = request.json['released']
+        # username = request.json['username']
+        # duration = int(request.json['duration'])
+        commentText = request.json['text']
 
-        movie = Movie(id, title, duration, released)
-        affected_rows = MovieModel.update_movie(movie)
+        comment = Comment(id, None, commentText)
+        affected_rows = CommentModel.update_comment(comment)
 
         if affected_rows == 1:
-            return jsonify(movie.id)
+            return jsonify(comment.id)
         else:
             return jsonify({'message': 'No movie updated'}), 404
 
@@ -84,14 +84,14 @@ def update_movie(id):
 
 
 @main.route('/delete/<id>', methods=['DELETE'])
-def delete_movie(id):
+def delete_comment(id):
     try:
-        movie = Movie(id)
+        comment = Comment(id)
 
-        affected_rows = MovieModel.delete_movie(movie)
+        affected_rows = CommentModel.delete_comment(comment)
 
         if affected_rows >= 1:
-            return jsonify(movie.id)
+            return jsonify(comment.id)
         else:
             return jsonify({'message': 'No movie deleted'}), 404
 
