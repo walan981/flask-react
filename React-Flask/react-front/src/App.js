@@ -100,6 +100,7 @@ function App() {
 
     <div className="App">
       <h1>Postagem</h1>
+      <p>Imagem do post ficaria aqui</p>
 
     {/* Renderiza lista de filmes */}
       {(typeof data == 'undefined')?(
@@ -126,6 +127,7 @@ function App() {
         )
       }
 
+      <br/>
 
       <div>
           <form>
@@ -142,6 +144,7 @@ function App() {
               onChange={e=>setText(e.target.value)}>
             </input>
 
+   
 
             <button 
               type='submit'
